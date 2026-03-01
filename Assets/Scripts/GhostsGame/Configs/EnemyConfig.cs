@@ -6,6 +6,6 @@ namespace GhostsGame.Configs
     public class EnemyConfig : EntityConfig
     {
         [field: SerializeField] public float DirectionChangeInterval { get; private set; } = 3f;
-        [field: SerializeField] public int DamageToPlayer { get; private set; } = 1;
+        [field: SerializeField] public int Damage { get; private set; } = 1;
     }
 }

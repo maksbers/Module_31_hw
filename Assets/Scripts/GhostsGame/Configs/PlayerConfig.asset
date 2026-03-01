@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Prefab>k__BackingField: {fileID: 6150018283044525871, guid: 58822ea6d53e2e74796b931448b3742f,
     type: 3}
-  <WeaponConfig>k__BackingField: {fileID: 11400000, guid: fd2be607cdede474b9172af73f430287,
-    type: 2}
-  <MaxHealth>k__BackingField: 3
+  <MaxHealth>k__BackingField: 1
   <MoveSpeed>k__BackingField: 5
   <RotationSpeed>k__BackingField: 10
   <DeathDelay>k__BackingField: 2
+  <WeaponConfig>k__BackingField: {fileID: 11400000, guid: fd2be607cdede474b9172af73f430287,
+    type: 2}

@@ -16,10 +16,15 @@ namespace GhostsGame.Controllers
         {
             _character = character;
             _input = new PlayerInputController();
+
+            _character.Health.Died += OnDeath;
         }
 
         public void OnUpdate()
         {
+            if (_character == null || !_character.IsActive)
+                return;
+
             Vector3 inputAxis = _input.GetMovementDirection();
 
             if (_input.IsFiring() && _character.Weapon != null)
@@ -37,13 +42,9 @@ namespace GhostsGame.Controllers
             _character.Rotator?.RotateTo(inputAxis);
         }
 
-        public void OnControllerColliderHit(ControllerColliderHit hit)
+        private void OnDeath()
         {
-        }
-
-        public void OnDeath()
-        {
-            if (_character.Animator != null)
+            if (_character != null && _character.Animator != null)
             {
                 _character.Animator.SetBool(IsRunningKey, false);
                 _character.Animator.SetBool(IsWinKey, true);

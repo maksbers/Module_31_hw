@@ -830,13 +830,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c323100578692844f92334b5166efbe7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _winBySurviveTime: 0
-  _surviveTime: 20
-  _winByKillCount: 1
-  _enemiesToKill: 5
-  _loseByPlayerDeath: 1
-  _loseByEnemyOverrun: 1
-  _maxEnemiesOnArena: 5
+  _winConditionConfigs:
+  - {fileID: 11400000, guid: d050506f26fcf684d9af79d827b3e95e, type: 2}
+  - {fileID: 11400000, guid: 1980da1a2147f16428b9f3a9de7bd1ba, type: 2}
+  _loseConditionConfigs:
+  - {fileID: 11400000, guid: 53d68025f595a0049b83391dd1661dd9, type: 2}
+  - {fileID: 11400000, guid: 6341a2622914bc24d9f16b083e22bd9d, type: 2}
 --- !u!114 &1769492092
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -13,6 +13,7 @@ namespace GhostsGame.Core
 
         private ObservableList<CharacterEntity> _activeEnemies;
         private CharacterEntity _player;
+        private ControllersUpdateService _controllersUpdateService;
 
         private void Start()
         {
@@ -21,30 +22,19 @@ namespace GhostsGame.Core
 
         private void InitializeGame()
         {
+            _controllersUpdateService = new ControllersUpdateService();
+            _charactersFactory.Initialize(_controllersUpdateService);
+
             _activeEnemies = new ObservableList<CharacterEntity>();
 
             SpawnPlayer();
 
-            _gameManager.Initialize(_activeEnemies, _player);
-            _enemiesSpawner.Initialize(_activeEnemies);
-
-            _gameManager.GameEnded += StopSpawning;
-            _gameManager.GameWon += StopSpawning;
+            _gameManager.Initialize(_activeEnemies, _player, _enemiesSpawner);
         }
 
-        private void StopSpawning()
+        private void Update()
         {
-            if (_enemiesSpawner != null)
-                _enemiesSpawner.StopSpawning();
-        }
-
-        private void OnDestroy()
-        {
-            if (_gameManager != null)
-            {
-                _gameManager.GameEnded -= StopSpawning;
-                _gameManager.GameWon -= StopSpawning;
-            }
+            _controllersUpdateService?.Update();
         }
 
         private void SpawnPlayer()

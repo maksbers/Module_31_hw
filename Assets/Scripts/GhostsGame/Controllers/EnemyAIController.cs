@@ -1,6 +1,6 @@
+using UnityEngine;
 using GhostsGame.Character;
 using GhostsGame.Configs;
-using UnityEngine;
 
 namespace GhostsGame.Controllers
 {
@@ -8,29 +8,32 @@ namespace GhostsGame.Controllers
     {
         private readonly CharacterEntity _character;
         private readonly float _directionChangeInterval;
-        private readonly int _damageToPlayer;
+        private readonly int _damage;
 
         private Vector3 _currentDirection;
         private float _directionTimer;
 
         private readonly int IsRunningKey = Animator.StringToHash("IsRunning");
 
+        private bool _hasAttacked;
+
         public EnemyAIController(CharacterEntity character, EnemyConfig config)
         {
             _character = character;
             _directionChangeInterval = config.DirectionChangeInterval;
-            _damageToPlayer = config.DamageToPlayer;
+            _damage = config.Damage;
+
+            _character.Hit += OnControllerColliderHit;
+            _character.Health.Died += OnDeath;
 
             ChooseRandomDirection();
         }
 
-        private bool _hasAttacked;
-
         public void OnUpdate()
         {
-            if (_hasAttacked)
+            if (_hasAttacked || _character == null || !_character.IsActive)
             {
-                if (_character.Animator != null)
+                if (_character != null && _character.Animator != null)
                     _character.Animator.SetBool(IsRunningKey, false);
 
                 return;
@@ -52,10 +55,11 @@ namespace GhostsGame.Controllers
         {
             float randomAngle = Random.Range(0f, 360f);
             _currentDirection = Quaternion.Euler(0, randomAngle, 0) * Vector3.forward;
+
             _directionTimer = _directionChangeInterval;
         }
 
-        public void OnControllerColliderHit(ControllerColliderHit hit)
+        private void OnControllerColliderHit(ControllerColliderHit hit)
         {
             if (_hasAttacked)
                 return;
@@ -70,16 +74,16 @@ namespace GhostsGame.Controllers
             {
                 _hasAttacked = true;
 
-                otherEntity.Health.TakeDamage(otherEntity.Health.CurrentHealth);
+                otherEntity.Health.TakeDamage(_damage);
 
                 if (_character.Health != null)
                     _character.Health.TakeDamage(_character.Health.CurrentHealth);
             }
         }
 
-        public void OnDeath()
+        private void OnDeath()
         {
-            if (_character.Animator != null)
+            if (_character != null && _character.Animator != null)
                 _character.Animator.SetBool(IsRunningKey, false);
         }
     }

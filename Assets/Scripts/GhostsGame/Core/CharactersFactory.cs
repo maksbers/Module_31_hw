@@ -1,13 +1,21 @@
 using UnityEngine;
 using GhostsGame.Character;
 using GhostsGame.Controllers;
+using GhostsGame.Configs;
 
 namespace GhostsGame.Core
 {
     public class CharactersFactory : MonoBehaviour
     {
-        [SerializeField] private Configs.PlayerConfig _playerConfig;
-        [SerializeField] private Configs.EnemyConfig _enemyConfig;
+        [SerializeField] private PlayerConfig _playerConfig;
+        [SerializeField] private EnemyConfig _enemyConfig;
+
+        private ControllersUpdateService _controllersUpdateService;
+
+        public void Initialize(ControllersUpdateService controllersUpdateService)
+        {
+            _controllersUpdateService = controllersUpdateService;
+        }
 
         public CharacterEntity CreatePlayer(Vector3 position, Quaternion rotation)
         {
@@ -18,8 +26,23 @@ namespace GhostsGame.Core
             }
 
             CharacterEntity player = Instantiate(_playerConfig.Prefab, position, rotation);
+            WeaponSystem weapon = new WeaponSystem(_playerConfig.WeaponConfig, player.FirePoint);
+
+            player.Initialize(
+                _playerConfig.MoveSpeed,
+                _playerConfig.RotationSpeed,
+                _playerConfig.MaxHealth,
+                _playerConfig.DeathDelay,
+                weapon
+            );
+
             PlayerController controller = new PlayerController(player);
-            player.Initialize(_playerConfig, controller);
+
+            if (_controllersUpdateService != null)
+            {
+                _controllersUpdateService.Register(controller);
+                player.Health.Died += () => _controllersUpdateService.Unregister(controller);
+            }
 
             return player;
         }
@@ -33,8 +56,23 @@ namespace GhostsGame.Core
             }
 
             CharacterEntity enemy = Instantiate(_enemyConfig.Prefab, position, rotation);
+            EmptyWeapon weapon = new EmptyWeapon();
+
+            enemy.Initialize(
+                _enemyConfig.MoveSpeed,
+                _enemyConfig.RotationSpeed,
+                _enemyConfig.MaxHealth,
+                _enemyConfig.DeathDelay,
+                weapon
+            );
+
             EnemyAIController controller = new EnemyAIController(enemy, _enemyConfig);
-            enemy.Initialize(_enemyConfig, controller);
+
+            if (_controllersUpdateService != null)
+            {
+                _controllersUpdateService.Register(controller);
+                enemy.Health.Died += () => _controllersUpdateService.Unregister(controller);
+            }
 
             return enemy;
         }

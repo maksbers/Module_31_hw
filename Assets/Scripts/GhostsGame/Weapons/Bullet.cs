@@ -1,5 +1,6 @@
 using UnityEngine;
 using GhostsGame.Character;
+using GhostsGame.Configs;
 
 namespace GhostsGame.Weapons
 {
@@ -9,7 +10,7 @@ namespace GhostsGame.Weapons
         private float _lifetime;
         private int _damage;
 
-        public void Initialize(Configs.BulletConfig config)
+        public void Initialize(BulletConfig config)
         {
             _speed = config.Speed;
             _lifetime = config.Lifetime;
